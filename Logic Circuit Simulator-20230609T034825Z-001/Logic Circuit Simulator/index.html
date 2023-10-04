@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Circuit Simulator</title>
+	<script src="p5.min.js"></script>
+	<script src="classes.js"></script>
+	<script type="text/javascript" src="Bootstrap/JS/bootstrap.js"></script>
+	<link rel="stylesheet" href="style.css">
+	<link rel="stylesheet" type="text/css" href="Bootstrap/CSS/bootstrap.css">
+</head>
+<body style="background: linear-gradient(to right, #0f0c29, #302b63, #24243e);">
+	<button id="down" onclick="increaseDown()">
+		<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" fill="currentColor" class="bi bi-arrow-down-circle-fill" viewBox="0 0 16 16" id="IconChangeColor"> <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v5.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V4.5z" id="mainIconPathAttribute" fill="#000000" stroke-width="0.1" stroke="#000000"></path> </svg>
+	</button>
+	<button id="right" onclick="increaseRight()">
+		<svg id="changeColor" fill="#000000" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="200" zoomAndPan="magnify" viewBox="0 0 375 374.9999" height="200" preserveAspectRatio="xMidYMid meet" version="1.0"><defs><path id="pathAttribute" d="M 7.09375 7.09375 L 367.84375 7.09375 L 367.84375 367.84375 L 7.09375 367.84375 Z M 7.09375 7.09375 " fill="#000000"></path></defs><g><path id="pathAttribute" d="M 187.46875 7.09375 C 87.851562 7.09375 7.09375 87.851562 7.09375 187.46875 C 7.09375 287.085938 87.851562 367.84375 187.46875 367.84375 C 287.085938 367.84375 367.84375 287.085938 367.84375 187.46875 C 367.84375 87.851562 287.085938 7.09375 187.46875 7.09375 " fill-opacity="1" fill-rule="nonzero" fill="#000000"></path></g><g id="inner-icon" transform="translate(85, 75)"> <svg xmlns="http://www.w3.org/2000/svg" width="222" height="222" fill="#000000" class="bi bi-arrow-right" viewBox="0 0 16 16" id="IconChangeColor"> <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z" id="mainIconPathAttribute" fill="#ffffff" stroke-width="0.6" stroke="#ffffff"></path> </svg> </g></svg>
+	</button>
+	<button id="fullscreen" onclick="toggleFullscreen()">
+		<svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="60.000000pt" height="60.000000pt" viewBox="0 0 30.000000 30.000000" preserveAspectRatio="xMidYMid meet">
+			<g transform="translate(0.000000,30.000000) scale(0.120000,-0.120000)" fill="#000000" stroke="none">
+				<path d="M47 253 c-11 -10 -8 -63 3 -63 6 0 10 11 10 25 0 20 5 25 25 25 14 0 25 5 25 10 0 11 -53 14 -63 3z"/>
+				<path d="M190 251 c0 -6 11 -11 25 -11 20 0 25 -5 25 -25 0 -14 5 -25 11 -25 6 0 9 14 7 33 -3 28 -7 32 -35 35 -19 2 -33 -1 -33 -7z"/>
+				<path d="M42 78 c3 -29 7 -33 36 -36 18 -2 32 1 32 7 0 6 -11 11 -25 11 -20 0 -25 5 -25 25 0 14 -5 25 -11 25 -6 0 -9 -14 -7 -32z"/>
+				<path d="M240 85 c0 -20 -5 -25 -25 -25 -14 0 -25 -5 -25 -11 0 -6 14 -9 33 -7 28 3 32 7 35 36 2 18 -1 32 -7 32 -6 0 -11 -11 -11 -25z"/>
+			</g>
+		</svg>
+	</button>
+	<button id='cleardatabtn' onclick="clearAllData()">&#x1F5D1;</button>
+	<div id="actionpanel" onclick="console.log('action panel')">
+		<div onclick="hideOptions()"><span>&times;</span></div>
+		<button onclick="deleteNode(optionNode)">Delete Node</button>
+		<button onclick="renameNode(optionNode)">Rename Node</button>
+		<button onclick="breakOutputConnection(optionNode)">Break Output Connection</button>
+	</div>
+	<div id="helpcontainer">
+		<div id="innerhelp">
+			<div onclick="document.getElementById('helpcontainer').classList.remove('active')"><span>&times;</span></div>
+			<ul>
+				<h2>For Android: </h2>
+				<li>Hold a node to get Options</li>
+			</ul>
+			<br/>
+			<ul>
+				<h2>For PC: </h2>
+				<li><span>Hover + </span><kbd>CTRL+A</kbd><span> : Rename Input / Output</span></li>
+				<li><span>Hover + </span><kbd>CTRL+B</kbd><span>  : Break Output Connections</span></li>
+				<li><span>Hover + </span><kbd>delete</kbd><span> : Delete a Node</span></li>
+			</ul>
+		</div>
+	</div>
+	<div class="container-fluid min-vh-100 d-flex flex-column">
+		<div class="row flex-grow-1">
+			<div class="col-10">
+				<!-- Main Content -->
+				<div class="cnvcontcont">
+					<div class="cnvcont">
+						
+					</div>
+				</div>
+			</div>
+			<div class="col-2">
+				<!-- Sidebar -->
+				<div id="sidebar">
+					<div class="accordion" id="accordionFlushExampleX">
+						<!-- I/O -->
+						<div class="accordion-item">
+							<h2 class="accordion-header" id="flush-headingIO">
+								<button class="accordion-button collapsed bg-light bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseIO" aria-expanded="true" aria-controls="flush-collapseIO">
+									I/O
+								</button>
+							</h2>
+							<div id="flush-collapseIO" class="accordion-collapse collapse" aria-labelledby="flush-headingIO" data-bs-parent="#accordionFlushExampleX">
+								<div class="accordion-body">
+									<div class="row">
+										<button class="btn btn-outline-primary nodebtn" onclick="createGroup()" type="button">Create Group</button>
+									</div>
+									<div class="row">
+										<button class="btn btn-outline-primary nodebtn" onclick="placeNode(new INPUT())" type="button">Input</button>
+									</div>
+									<div class="row">
+										<button class="btn btn-outline-primary nodebtn" onclick="placeNode(new OUTPUT())" type="button">Output</button>
+									</div>
+									<div class="row">
+										<button class="btn btn-outline-primary nodebtn" onclick="placeNode(new JUNCTION())" type="button">Junction</button>
+									</div>
+									<div class="row">
+										<button class="btn btn-outline-primary nodebtn" onclick="placeNode(new PULSE())" type="button">Pulse</button>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<!-- Basic Logic Gates -->
+						<div class="accordion-item">
+							<h2 class="accordion-header" id="flush-headingBasicLogicGates">
+								<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseBasicLogicGates" aria-expanded="false" aria-controls="flush-collapseBasicLogicGates">
+									Basic Logic Gates
+								</button>
+							</h2>
+							<div id="flush-collapseBasicLogicGates" class="accordion-collapse collapse" aria-labelledby="flush-headingBasicLogicGates" data-bs-parent="#accordionFlushExampleX">
+								<div class="accordion-body">
+									<div class="row">
+										<button class="btn btn-outline-primary nodebtn" onclick="placeNode(new AND())" type="button">AND gate</button>
+									</div>
+									<div class="row">
+										<button class="btn btn-outline-primary nodebtn" onclick="placeNode(new OR())" type="button">OR gate</button>
+									</div>
+									<div class="row">
+										<button class="btn btn-outline-primary nodebtn" onclick="placeNode(new NOT())" type="button">NOT gate</button>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<!-- Derived Logic Gates -->
+						<div class="accordion-item">
+							<h2 class="accordion-header" id="flush-headingDerivedLogicGates">
+								<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseDerivedLogicGates" aria-expanded="false" aria-controls="flush-collapseDerivedLogicGates">
+									Derived Logic Gates
+								</button>
+							</h2>
+							<div id="flush-collapseDerivedLogicGates" class="accordion-collapse collapse" aria-labelledby="flush-headingDerivedLogicGates" data-bs-parent="#accordionFlushExampleX">
+								<div class="accordion-body">
+									<div class="row">
+										<button class="btn btn-outline-primary nodebtn" onclick="placeNode(new NAND())" type="button">NAND gate</button>
+									</div>
+									<div class="row">
+										<button class="btn btn-outline-primary nodebtn" onclick="placeNode(new NOR())" type="button">NOR gate</button>
+									</div>
+									<div class="row">
+										<button class="btn btn-outline-primary nodebtn" onclick="placeNode(new XOR())" type="button">XOR gate</button>
+									</div>
+									<div class="row">
+										<button class="btn btn-outline-primary nodebtn" onclick="placeNode(new XNOR())" type="button">XNOR gate</button>
+									</div>
+									<div class="row">
+										<button class="btn btn-outline-primary nodebtn" onclick="placeNode(new AND_3())" type="button">3-AND gate</button>
+									</div>
+									<div class="row">
+										<button class="btn btn-outline-primary nodebtn" onclick="placeNode(new OR_3())" type="button">3-OR gate</button>
+									</div>
+									<div class="row">
+										<button class="btn btn-outline-primary nodebtn" onclick="placeNode(new NAND_3())" type="button">3-NAND gate</button>
+									</div>
+									<div class="row">
+										<button class="btn btn-outline-primary nodebtn" onclick="placeNode(new NOR_3())" type="button">3-NOR gate</button>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<!-- Latches -->
+						<div class="accordion-item">
+							<h2 class="accordion-header" id="flush-headingLatches">
+								<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseLatches" aria-expanded="false" aria-controls="flush-collapseLatches">
+									Latches
+								</button>
+							</h2>
+							<div id="flush-collapseLatches" class="accordion-collapse collapse" aria-labelledby="flush-headingLatches" data-bs-parent="#accordionFlushExampleX">
+								<div class="accordion-body">
+									<div class="row">
+										<button class="btn btn-outline-primary nodebtn" onclick="placeNode(new SR_LATCH())" type="button">SR-Latch</button>
+									</div>
+									<div class="row">
+										<button class="btn btn-outline-primary nodebtn" onclick="placeNode(new D_LATCH())" type="button">D-Latch</button>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<!-- Registers -->
+						<div class="accordion-item">
+							<h2 class="accordion-header" id="flush-headingRegisters">
+								<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseRegisters" aria-expanded="false" aria-controls="flush-collapseRegisters">
+									Registers
+								</button>
+							</h2>
+							<div id="flush-collapseRegisters" class="accordion-collapse collapse" aria-labelledby="flush-headingRegisters" data-bs-parent="#accordionFlushExampleX">
+								<div class="accordion-body">
+									<div class="row">
+										<button class="btn btn-outline-primary nodebtn" onclick="placeNode(new REGISTER_4())" type="button">4bit_Register</button>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<!-- Custom Circuits -->
+						<div class="accordion-item">
+							<h2 class="accordion-header" id="flush-headingCustom">
+								<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseCustom" aria-expanded="false" aria-controls="flush-collapseCustom">
+									Custom Circuits
+								</button>
+							</h2>
+							<div id="flush-collapseCustom" class="accordion-collapse collapse" aria-labelledby="flush-headingCustom" data-bs-parent="#accordionFlushExampleX">
+								<div class="accordion-body">
+									<!-- <div class="row">
+										<button class="btn btn-outline-primary nodebtn" onclick="placeNode(new REGISTER_4())" type="button">4bit_Register</button>
+									</div> -->
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+	<!-- <div class="cnvcontcont">
+		<div class="cnvcont"></div>
+	</div> -->
+	<div class="sidebar">
+		<!-- <button class="nodebtn" onclick="createGroup()" style="background-color: #2b2e46;">Create Group</button>
+		<button class="nodebtn" onclick="placeNode(new JUNCTION())">JUNCTION</button>
+		<button class="nodebtn" onclick="placeNode(new INPUT())">Input</button>
+		<button class="nodebtn" onclick="placeNode(new OUTPUT())">Output</button>
+		<button class="nodebtn" onclick="placeNode(new PULSE())">Pulse</button>
+		<button class="nodebtn" onclick="placeNode(new AND())">AND</button>
+		<button class="nodebtn" onclick="placeNode(new OR())">OR</button>
+		<button class="nodebtn" onclick="placeNode(new NOT())">NOT</button>
+		<button class="nodebtn" onclick="placeNode(new NAND())">NAND</button>
+		<button class="nodebtn" onclick="placeNode(new NOR())">NOR</button>
+		<button class="nodebtn" onclick="placeNode(new XOR())">XOR</button>
+		<button class="nodebtn" onclick="placeNode(new XNOR())">XNOR</button>
+		<button class="nodebtn" onclick="placeNode(new AND_3())">3-AND</button>
+		<button class="nodebtn" onclick="placeNode(new OR_3())">3-OR</button>
+		<button class="nodebtn" onclick="placeNode(new NAND_3())">3-NAND</button>
+		<button class="nodebtn" onclick="placeNode(new NOR_3())">3-NOR</button>
+		<button class="nodebtn" onclick="placeNode(new SR_LATCH())">SR-LATCH</button>
+		<button class="nodebtn" onclick="placeNode(new D_LATCH())">D-LATCH</button>
+		<button class="nodebtn" onclick="placeNode(new REGISTER_4())">REGISTER_4bit</button> -->
+	</div>
+	<script src="script.js" defer></script>
+</body>
+</html>
